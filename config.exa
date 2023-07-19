@@ -1,0 +1,20 @@
+process announce-routesv4 {
+        run /usr/bin/python3 /etc/exabgp/ipv4-adv-route.py;
+        encoder json;
+}
+
+
+neighbor 10.10.10.3 {
+        router-id 10.10.10.2;
+        local-address 10.10.10.2;
+        local-as 65000;
+        peer-as 64512;
+
+        api {
+                processes [ announce-routesv4 ];
+                send {
+                        packets;
+                }
+        }
+
+}
