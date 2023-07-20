@@ -1,20 +1,41 @@
 process announce-routesv4 {
-        run /usr/bin/python3 /etc/exabgp/ipv4-adv-route.py;
-        encoder json;
+    run /usr/bin/python3 /etc/exabgp/ipv4-adv-route.py;
+    encoder json;
 }
 
+process announce-routesv6 {
+    run /usr/bin/python3 /etc/exabgp/ipv6-adv-route.py;
+    encoder json;
+}
 
 neighbor 10.10.10.3 {
-        router-id 10.10.10.2;
-        local-address 10.10.10.2;
-        local-as 65000;
-        peer-as 64512;
-
-        api {
-                processes [ announce-routesv4 ];
-                send {
-                        packets;
-                }
+    router-id 10.10.10.2;
+    local-address 10.10.10.2;
+    local-as 65000;
+    peer-as 64512;
+    family {
+        ipv4 unicast;
+    }
+    api {
+        processes [ announce-routesv4 ];
+        send {
+            packets;
         }
+    }
+}
 
+neighbor 2001:e69:3001:1003:fff4::1 {
+    router-id 10.10.10.2;
+    local-address 2001:e69:3001:1003:fff4::;
+    local-as 65000;
+    peer-as 64512;
+    family {
+        ipv6 unicast;
+    }
+    api {
+        processes [ announce-routesv6 ];
+        send {
+            packets;
+        }
+    }
 }
